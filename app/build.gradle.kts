@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.jetpack"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = 25
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -73,4 +73,13 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("androidx.navigation:navigation-compose:2.8.6")
     implementation ("androidx.compose.material:material-icons-extended:1.5.0")
+
+    //OlaMap SDK
+    implementation(files("libs/OlaMapSdk.aar"))
+//Maplibre
+    implementation ("org.maplibre.gl:android-sdk:10.0.2")
+    implementation ("org.maplibre.gl:android-plugin-annotation-v9:1.0.0")
+    implementation ("org.maplibre.gl:android-plugin-markerview-v9:1.0.0")
+    //raorpay
+    implementation ("com.razorpay:checkout:1.6.33")
 }
