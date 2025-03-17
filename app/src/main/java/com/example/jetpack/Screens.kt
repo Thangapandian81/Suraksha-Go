@@ -9,4 +9,7 @@ sealed class Screens(val screen:String){
     data object Insurance:Screens("insurance")
     data object SOS:Screens("sos")
     data object Rating:Screens("rating")
+    data object Calculate : Screens("calculate")
+    data object OnlinePayment:Screens("onlinepayment")
+
 }
