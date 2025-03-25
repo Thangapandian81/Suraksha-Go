@@ -3,7 +3,7 @@ package com.example.jetpack
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+//import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +22,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.Settings
+//import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Menu
@@ -59,7 +59,7 @@ val menuItems = listOf(
     MenuItem("Payment", Icons.Filled.AccountBalanceWallet, Screens.Payment.screen),
     MenuItem("Insurance", Icons.Filled.Security, Screens.Insurance.screen),
     MenuItem("SOS", Icons.Filled.Warning, Screens.SOS.screen),
-    MenuItem("Profile", Icons.Default.Person, Screens.Profile.screen),
+    MenuItem("Profile", Icons.Default.Person, Screens.ProfileScreen.screen),
 //    MenuItem("Settings", Icons.Default.Settings, Screens.Settings.screen),
     MenuItem("Rating", Icons.Filled.Star, Screens.Rating.screen)
 )
@@ -72,7 +72,7 @@ fun Home(navController: NavController, drawerState: DrawerState) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Ride Booking") },
+                title = { Text(text = "Suraksha Go") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = YellowJC,
                     titleContentColor = Color.Black,

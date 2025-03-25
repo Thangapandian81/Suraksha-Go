@@ -1,10 +1,12 @@
 package com.example.jetpack
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
@@ -64,27 +66,41 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+//import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
-import androidx.navigation.NavHostController
+import androidx.compose.runtime.remember
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        installSplashScreen()
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                moveTaskToBack(true) // Moves app to the background instead of exiting
+            }
+        })
         enableEdgeToEdge()
         setContent {
             JetPackTheme {
                 Surface(
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavDrawer()
+                    val context = LocalContext.current
+                    val sharedPreferences =
+                        remember { context.getSharedPreferences("UserPrefs", MODE_PRIVATE) }
+                    val userId = sharedPreferences.getString("user_id", null)
+                    if (userId != null) {
+                        NavDrawer()
+                    } else {
+                        LaunchedEffect(Unit) {
+                            val intent = Intent(context, LoginActivity::class.java)
+                            context.startActivity(intent)
+                        }
+                    }
                 }
             }
         }
     }
-
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
@@ -94,6 +110,9 @@ class MainActivity : ComponentActivity() {
         val coroutineScope = rememberCoroutineScope()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val context = LocalContext.current.applicationContext
+        val sharedPreferences = remember { context.getSharedPreferences("UserPrefs", MODE_PRIVATE) }
+        val profileName = sharedPreferences.getString("profile_name",null)
+        val profileEmail = sharedPreferences.getString("profile_email",null)
 
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -124,13 +143,13 @@ class MainActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
                                 Text(
-                                    text = "John Doe",
+                                    text = profileName.toString(),
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = YellowJC
                                 )
                                 Text(
-                                    text = "johndoe@example.com",
+                                    text =profileEmail.toString(),
                                     fontSize = 14.sp,
                                     color = Color.White
                                 )
@@ -239,7 +258,7 @@ class MainActivity : ComponentActivity() {
                             coroutineScope.launch {
                                 drawerState.close()
                             }
-                            navigationController.navigate(Screens.Profile.screen) {
+                            navigationController.navigate(Screens.ProfileScreen.screen) {
                                 popUpTo(0)
                             }
                         })
@@ -277,7 +296,8 @@ class MainActivity : ComponentActivity() {
                                 popUpTo(0)
                             }
                         })
-                    NavigationDrawerItem(label = { Text(text = "Logout", color = YellowJC) },
+                    NavigationDrawerItem(
+                        label = { Text(text = "Logout", color = YellowJC) },
                         selected = false,
                         icon = {
                             Icon(
@@ -290,8 +310,21 @@ class MainActivity : ComponentActivity() {
                             coroutineScope.launch {
                                 drawerState.close()
                             }
-                            Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show()
-                        })
+
+                            // Clear all SharedPreferences values
+                            val sharedPreferences = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                            sharedPreferences.edit().clear().apply()
+
+                            // Show logout message
+                            Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
+
+                            // Navigate to LoginActivity and clear the back stack
+                            val intent = Intent(context, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            context.startActivity(intent)
+                        }
+                    )
+
                 }
             },
         ) {
@@ -299,11 +332,11 @@ class MainActivity : ComponentActivity() {
                 topBar = {
                     val coroutineScope = rememberCoroutineScope()
                     TopAppBar(
-                        title = { Text(text = "Ride Booking") },
+                        title = { Text(text = "Suraksha Go", fontWeight = FontWeight.Bold) },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = YellowJC,
-                            titleContentColor = Color.White,
-                            navigationIconContentColor = Color.White
+                            titleContentColor = Color.Black,
+                            navigationIconContentColor = Color.Black
                         ),
                         navigationIcon = {
                             IconButton(onClick = {
@@ -338,9 +371,8 @@ class MainActivity : ComponentActivity() {
                     composable(Screens.Insurance.screen) { Insurance() }
                     composable(Screens.SOS.screen) { SOS() }
                     composable(Screens.Rating.screen) { Rating() }
-                    composable(Screens.Profile.screen) { Profile() }
+                    composable(Screens.ProfileScreen.screen) { ProfileScreen(context= LocalContext.current) }
                     composable(Screens.Settings.screen) { Settings() }
-
                 }
 
             }
