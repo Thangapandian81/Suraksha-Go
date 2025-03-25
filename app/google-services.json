@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "442235892605",
+    "project_id": "surasha-go-55d0d",
+    "storage_bucket": "surasha-go-55d0d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442235892605:android:e898926034bd20f89b5214",
+        "android_client_info": {
+          "package_name": "com.example.jetpack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "442235892605-mlilpvhfjum13msa4ftfvu2h59ss8g3d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jetpack",
+            "certificate_hash": "14374f15e7dc2fce487476c72a9d6c8d2b500242"
+          }
+        },
+        {
+          "client_id": "442235892605-dk647bmrrdpo5b08n602c454ak7ucg9h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnVetf_jjnlGy4eMuqmH4Ec0GBxbi4RVg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "442235892605-dk647bmrrdpo5b08n602c454ak7ucg9h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

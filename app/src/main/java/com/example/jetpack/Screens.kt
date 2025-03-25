@@ -2,7 +2,7 @@ package com.example.jetpack
 
 sealed class Screens(val screen:String){
     data object Home:Screens("home")
-    data object Profile:Screens("profile")
+    data object ProfileScreen:Screens("profile")
     data object Settings:Screens("settings")
     data object MyRides:Screens("myrides")
     data object Payment:Screens("payment")
