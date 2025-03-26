@@ -388,12 +388,12 @@ class MainActivity : ComponentActivity() {
             context.startActivity(intent)
         }
 
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Opening Ride Screen...")
-        }
+//        Box(
+//            modifier = Modifier.fillMaxSize(),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Text("Opening Ride Screen...")
+//        }
     }
 }
 

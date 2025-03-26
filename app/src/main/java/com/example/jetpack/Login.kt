@@ -134,9 +134,8 @@ fun LoginScreen() {
                                                 sharedPreferences.edit().putString("profile_email",document.getString("email").toString()).apply()
 
                                                 Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
-
-                                                val intent = Intent(context, MainActivity::class.java)
-                                                context.startActivity(intent)
+                                                    val intent = Intent(context, MainActivity::class.java)
+                                                    context.startActivity(intent)
                                             } else {
                                                 Toast.makeText(context, "User ID not found", Toast.LENGTH_SHORT).show()
                                             }

@@ -142,6 +142,7 @@
 
 package com.example.jetpack
 
+
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
@@ -158,6 +159,7 @@ import com.ola.mapsdk.view.OlaMapView
 import java.util.Locale
 import android.content.Intent
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import kotlin.math.*
 
 class MyRides : AppCompatActivity() {
@@ -172,8 +174,16 @@ class MyRides : AppCompatActivity() {
     private var startLatLng: OlaLatLng? = null
     private var destinationLatLng: OlaLatLng? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val intent = Intent(this@MyRides, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+        })
         setContentView(R.layout.activity_select_place)
 
         distanceButton = findViewById(R.id.btnCalculateDistance)
@@ -303,6 +313,7 @@ class MyRides : AppCompatActivity() {
         olaMap.addMarker(endMarker)
 
         olaMap.moveCameraToLatLong(start, 12.0, 1000)
+
     }
 }
 
