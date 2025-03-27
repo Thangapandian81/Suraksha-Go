@@ -1,5 +1,6 @@
 package com.example.jetpack
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,20 +10,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.widget.Toast
-import androidx.compose.ui.graphics.Color.Companion
 import com.example.jetpack.ui.theme.YellowJC
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun Rating() {
     val context = LocalContext.current
     var appRating by remember { mutableStateOf(0) }
     var rideRating by remember { mutableStateOf(0) }
+    val db = FirebaseFirestore.getInstance()
+    val userId = FirebaseAuth.getInstance().currentUser?.uid // Get current user ID
 
     Column(
         modifier = Modifier
@@ -53,7 +55,25 @@ fun Rating() {
         // Submit Button
         Button(
             onClick = {
-                Toast.makeText(context, "Thank you for your feedback!", Toast.LENGTH_SHORT).show()
+                if (userId != null) {
+                    val ratingData = hashMapOf(
+                        "userId" to userId,
+                        "appRating" to appRating,
+                        "rideRating" to rideRating,
+                        "timestamp" to System.currentTimeMillis()
+                    )
+
+                    db.collection("ratings").document(userId)
+                        .set(ratingData)
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Thank you for your feedback!", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(context, "Failed to submit rating", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(context, "User not logged in!", Toast.LENGTH_SHORT).show()
+                }
             },
             colors = ButtonDefaults.buttonColors(containerColor = YellowJC),
             shape = RoundedCornerShape(8.dp),

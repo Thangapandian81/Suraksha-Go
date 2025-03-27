@@ -190,7 +190,7 @@ class MainActivity : ComponentActivity() {
                             coroutineScope.launch {
                                 drawerState.close()
                             }
-                            navigationController.navigate(Screens.MyRides.screen) {
+                            navigationController.navigate(Screens.History.screen) {
                                 popUpTo(0)
                             }
                         })
@@ -369,6 +369,7 @@ class MainActivity : ComponentActivity() {
 
                     composable(Screens.Payment.screen) { Payment() }
                     composable(Screens.Insurance.screen) { Insurance() }
+                    composable(Screens.History.screen) { History() }
                     composable(Screens.SOS.screen) { SOS() }
                     composable(Screens.Rating.screen) { Rating() }
                     composable(Screens.ProfileScreen.screen) { ProfileScreen(context= LocalContext.current) }

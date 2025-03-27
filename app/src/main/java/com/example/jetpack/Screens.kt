@@ -5,6 +5,7 @@ sealed class Screens(val screen:String){
     data object ProfileScreen:Screens("profile")
     data object Settings:Screens("settings")
     data object MyRides:Screens("myrides")
+    data object History:Screens("history")
     data object Payment:Screens("payment")
     data object Insurance:Screens("insurance")
     data object SOS:Screens("sos")
