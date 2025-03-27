@@ -60,6 +60,7 @@ suspend fun fetchUserDetails(userId:String): User? {
 
             val emergencyContact = data["emergencyContact"] as? Map<*, *>
             val emergencyEmail = emergencyContact?.get("email") as? String ?: "N/A"
+            val emergencyPhone= emergencyContact?.get("whatsapp")as? String ?: "N/A"
             val emergencyRelation = emergencyContact?.get("relation") as? String ?: "N/A"
 
             User(
@@ -69,6 +70,7 @@ suspend fun fetchUserDetails(userId:String): User? {
                 phone = data["phone"] as? String ?: "N/A",
                 pincode = data["pincode"] as? String ?: "N/A",
                 emergencyEmail = emergencyEmail,
+                emergencyPhone= emergencyPhone,
                 emergencyRelation = emergencyRelation
             )
         } else {
@@ -132,6 +134,7 @@ fun Profile(user: User) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 ProfileDetailItem("Email Id", user.emergencyEmail)
+                ProfileDetailItem("Whatsapp Number",user.emergencyPhone )
                 ProfileDetailItem("Relation", user.emergencyRelation)
             }
         }
@@ -166,5 +169,6 @@ data class User(
     val phone: String = "",
     val pincode: String = "",
     val emergencyEmail: String = "",
+    val emergencyPhone:String="",
     val emergencyRelation: String = ""
 )

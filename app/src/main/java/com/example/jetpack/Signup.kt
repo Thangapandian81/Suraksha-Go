@@ -57,6 +57,7 @@ fun Signup() {
     var address by remember { mutableStateOf("") }
     var pincode by remember { mutableStateOf("") }
     var emergencyEmail by remember { mutableStateOf("") }
+    var emergencyWhatsApp by remember { mutableStateOf("") }
     var relation by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
@@ -111,6 +112,7 @@ fun Signup() {
 
         Text("Emergency Contact", color = YellowJC, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp))
         inputField(emergencyEmail, { emergencyEmail = it }, "Emergency Contact Email", KeyboardType.Email)
+        inputField(emergencyWhatsApp, { emergencyWhatsApp = it }, "Emergency Contact WhatsApp", KeyboardType.Phone)
         inputField(relation, { relation = it }, "Relation (e.g., Father, Friend)")
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -144,6 +146,7 @@ fun Signup() {
                                                     "pincode" to pincode,
                                                     "emergencyContact" to mapOf(
                                                         "email" to emergencyEmail,
+                                                        "whatsapp" to emergencyWhatsApp,
                                                         "relation" to relation
                                                     )
                                                 )
