@@ -1,37 +1,69 @@
 package com.example.jetpack
 
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpack.ui.theme.YellowJC
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-// Sample Payment Data
-data class Payment(val rideId: String, val amount: String, val date: String, val status: String)
+// ✅ Data Model for Ride
+data class RideInfo(  // ✅ Changed from Ride to RideInfo
+    val rideId: String,
+    val amount: String,
+    val date: String,
+    val source: String,
+    val destination: String
+)
 
-// Payment History Screen
+// ✅ Rides Screen - Fetches & Displays Paid Rides for Logged-in User
 @Composable
 fun Payment() {
-    val context = LocalContext.current
+    val db = FirebaseFirestore.getInstance()
+    val auth = FirebaseAuth.getInstance()
+    val userId = auth.currentUser?.uid // Get the currently logged-in user ID
 
-    val paymentList = listOf(
-        Payment("#1234", "Rs.50.00", "12 Feb 2025", "Paid"),
-        Payment("#5678", "Rs.75.00", "10 Jan 2025", "Pending"),
-        Payment("#9101", "Rs.40.00", "5 Dec 2024", "Failed"),
-        Payment("#1121", "Rs.60.00", "20 Nov 2024", "Paid"),
-        Payment("#3141", "Rs.85.00", "1 Oct 2024", "Paid")
-    )
+    var rideList by remember { mutableStateOf<List<RideInfo>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) } // Loading state
 
+    // ✅ Fetch Rides from Firestore
+    LaunchedEffect(userId) {
+        if (userId != null) {
+            db.collection("rides")
+                .whereEqualTo("userId", userId) // Filter for only this user's rides
+                .whereEqualTo("paymentStatus", true) // Fetch only paid rides
+                .get()
+                .addOnSuccessListener { result ->
+                    val rides = result.documents.mapNotNull { doc ->
+                        val rideId = doc.getString("rideId") ?: "Unknown"
+                        val amount = doc.getDouble("totalFare")?.let { "Rs.%.2f".format(it) } ?: "Rs.0.00"
+                        val date = doc.getString("date") ?: "Unknown"
+                        val source = doc.getString("source") ?: "Unknown"
+                        val destination = doc.getString("destination") ?: "Unknown"
+
+                        RideInfo(rideId, amount, date, source, destination)
+                    }
+                    rideList = rides
+                    isLoading = false
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Firestore", "Error fetching rides", e)
+                    isLoading = false
+                }
+        }
+    }
+
+    // ✅ UI Layout
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,34 +72,34 @@ fun Payment() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(100.dp))
-
         Text(text = "Payment History", fontSize = 30.sp, color = YellowJC)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Payment Table (Scrollable)
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            items(paymentList) { payment ->
-                PaymentRow(payment) {
-                    Toast.makeText(context, "Viewing payment details for ${payment.rideId}", Toast.LENGTH_SHORT).show()
+        // ✅ Show Loading Indicator
+        if (isLoading) {
+            CircularProgressIndicator(color = YellowJC)
+        }
+        // ✅ Show Message if No Rides Found
+        else if (rideList.isEmpty()) {
+            Text(text = "No Paid Rides Found", color = Color.Gray, fontSize = 18.sp)
+        }
+        // ✅ Display Ride List
+        else {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(rideList) { ride ->
+                    RideRow(ride)
                 }
             }
         }
     }
 }
 
-// Table Row UI
+// ✅ Table Row UI
 @Composable
-fun PaymentRow(payment: Payment, onViewDetails: () -> Unit) {
-    val statusColor = when (payment.status) {
-        "Paid" -> Color.Green
-        "Pending" -> YellowJC
-        "Failed" -> Color.Red
-        else -> Color.Gray
-    }
-
+fun RideRow(ride: RideInfo){
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.DarkGray),
@@ -75,21 +107,19 @@ fun PaymentRow(payment: Payment, onViewDetails: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = "Ride ID: ${payment.rideId}", color = Color.White, fontSize = 16.sp)
-                Text(text = "Amount: ${payment.amount}", color = Color.White, fontSize = 16.sp)
-                Text(text = "Date: ${payment.date}", color = Color.Gray, fontSize = 14.sp)
-            }
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Ride ID: ${ride.rideId}", color = Color.White, fontSize = 16.sp)
+            Text(text = "Amount: ${ride.amount}", color = Color.White, fontSize = 16.sp)
+            Text(text = "Date: ${ride.date}", color = Color.Gray, fontSize = 14.sp)
+            Text(text = "From: ${ride.source}", color = Color.LightGray, fontSize = 14.sp)
+            Text(text = "To: ${ride.destination}", color = Color.LightGray, fontSize = 14.sp)
 
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
-                onClick = onViewDetails,
-                colors = ButtonDefaults.buttonColors(containerColor = statusColor)
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
             ) {
-                Text(text = payment.status, color = Color.Black)
+                Text(text = "Paid", color = Color.Black)
             }
         }
     }

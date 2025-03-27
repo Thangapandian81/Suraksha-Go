@@ -19,6 +19,8 @@ import com.razorpay.PaymentResultListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class OnlinePayment : ComponentActivity(), PaymentResultListener {
 
@@ -64,13 +66,13 @@ class OnlinePayment : ComponentActivity(), PaymentResultListener {
 
         try {
             val options = JSONObject().apply {
-                put("name", "Laundryes")
-                put("description", "Laundry Service Payment")
+                put("name", "Suraksha Go")
+                put("description", "Suraksha Go Service Payment")
                 put("currency", "INR")
                 put("amount", amount * 100)  // Convert INR to paisa
-                put("prefill.email", "laundryes@gmail.com")
+                put("prefill.email", "suraksha@gmail.com")
                 put("prefill.contact", "9626825027")
-                put("image", "https://raw.githubusercontent.com/Sri-10ran/LaundryesApp/refs/heads/master/app/src/main/res/drawable/logo.webp")
+//                put("image", "")
             }
 
             checkout.open(activity, options)
@@ -85,12 +87,32 @@ class OnlinePayment : ComponentActivity(), PaymentResultListener {
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
         Toast.makeText(this, "Payment Successful: $razorpayPaymentID", Toast.LENGTH_LONG).show()
 
+        // Get ride ID from intent
+        val rideId = intent.getStringExtra("RIDE_ID")
+
+        if (rideId != null) {
+            val db = FirebaseFirestore.getInstance()
+
+            // Update Firestore document: Set paymentStatus to true
+            db.collection("rides").document(rideId)
+                .update("paymentStatus", true, "paymentId", razorpayPaymentID)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Payment status updated!", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed to update payment status.", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(this, "Ride ID not found!", Toast.LENGTH_SHORT).show()
+        }
+
         // Redirect to MainActivity
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         finish()
     }
+
 
     override fun onPaymentError(code: Int, response: String?) {
         Toast.makeText(this, "Payment Failed: $response", Toast.LENGTH_LONG).show()

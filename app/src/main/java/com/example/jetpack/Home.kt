@@ -55,7 +55,7 @@ data class MenuItem(val title: String, val icon: ImageVector, val route: String)
 val menuItems = listOf(
     MenuItem("Home", Icons.Default.Home, Screens.Home.screen),
     MenuItem("Book Ride", Icons.Default.Place, Screens.MyRides.screen),
-    MenuItem("My Rides", Icons.Default.Place, Screens.MyRides.screen),
+    MenuItem("My Rides", Icons.Default.Place, Screens.History.screen),
     MenuItem("Payment", Icons.Filled.AccountBalanceWallet, Screens.Payment.screen),
     MenuItem("Insurance", Icons.Filled.Security, Screens.Insurance.screen),
     MenuItem("SOS", Icons.Filled.Warning, Screens.SOS.screen),

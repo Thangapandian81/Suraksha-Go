@@ -205,11 +205,12 @@ class MyRides : AppCompatActivity() {
                 }
             }
         )
-
+        var startLocation=""
+        var destinationLocation=""
         // Floating button click → Draw route
         fetchCurrentLocation.setOnClickListener {
-            val startLocation = startLocationEditText.text.toString().trim()
-            val destinationLocation = destinationEditText.text.toString().trim()
+            startLocation = startLocationEditText.text.toString().trim()
+            destinationLocation = destinationEditText.text.toString().trim()
 
             Log.v("startlocation", startLocation)
             Log.v("endlocation", destinationLocation)
@@ -239,7 +240,7 @@ class MyRides : AppCompatActivity() {
 
                 // Fare calculation: ₹3 per km
                 val costPerKm = 3.0
-                val totalFare = distanceInKm * costPerKm
+                val totalFare = (distanceInKm * costPerKm)+1.50+0.30
 
                 // Estimate time: assuming 40 km/h average → time in minutes
                 val estimatedTimeMinutes = (distanceInKm / 40.0) * 60
@@ -250,6 +251,8 @@ class MyRides : AppCompatActivity() {
                 intent.putExtra("DISTANCE_KM", distanceInKm)
                 intent.putExtra("TOTAL_FARE", totalFare)
                 intent.putExtra("ESTIMATED_TIME", estimatedTimeString)
+                intent.putExtra("Source",startLocation)
+                intent.putExtra("desti",destinationLocation)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Please draw route first", Toast.LENGTH_SHORT).show()

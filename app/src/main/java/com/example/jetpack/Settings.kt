@@ -77,28 +77,28 @@ fun Settings() {
         ) {
             Icon(Icons.Default.Brightness4, contentDescription = "Theme", tint = YellowJC)
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "Dark Mode", fontSize = 18.sp, color = Color.White)
+            Text(text = "Theme: Dark Mode", fontSize = 18.sp, color = Color.White)
             Spacer(modifier = Modifier.weight(1f))
         }
 
         Divider(color = Color.Gray)
 
         // Notifications Toggle
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { isNotificationsEnabled.value = !isNotificationsEnabled.value }
-                .padding(vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = YellowJC)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "Enable Notifications", fontSize = 18.sp, color = Color.White)
-            Spacer(modifier = Modifier.weight(1f))
-            Switch(checked = isNotificationsEnabled.value, onCheckedChange = { isNotificationsEnabled.value = it })
-        }
-
-        Divider(color = Color.Gray)
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .clickable { isNotificationsEnabled.value = !isNotificationsEnabled.value }
+//                .padding(vertical = 10.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = YellowJC)
+//            Spacer(modifier = Modifier.width(8.dp))
+//            Text(text = "Enable Notifications", fontSize = 18.sp, color = Color.White)
+//            Spacer(modifier = Modifier.weight(1f))
+//            Switch(checked = isNotificationsEnabled.value, onCheckedChange = { isNotificationsEnabled.value = it })
+//        }
+//
+//        Divider(color = Color.Gray)
 
         // Language Selection
         Row(
